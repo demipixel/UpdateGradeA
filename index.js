@@ -1,6 +1,7 @@
 var Youtube = require('youtube-api');
 var config = require('config');
 var Snoocore = require('snoocore');
+var moment = require('moment');
 
 var reddit = new Snoocore({
   userAgent: 'GradeAUpdater v1.0.0 by /u/demipixel for /u/GradeABelowA',
@@ -20,6 +21,7 @@ var auth = Youtube.authenticate({
 });
 
 var lastChecked = '';
+var lastPublished = '';
 
 setInterval(() => {
   Youtube.search.list({
@@ -32,12 +34,19 @@ setInterval(() => {
   });
 }, 5 * 1000);
 
+setInterval(() => {
+  if (!lastPublished) return;
+  console.log(moment().format('lll') + '] Last video posted ' + lastPublished.fromNow());
+}, 30 * 1000);
+
 function checkData(data) {
   if (data[0].etag == lastChecked) return;
   var time = (new Date(data[0].snippet.publishedAt)).getTime();
-  if (Date.now() - time < 1000*60) { // Last minute
+  lastPublished = moment(data[0].snippet.publishedAt);
+  if (Date.now() - time < 1000*60*5) { // Last 5 minutes
+    console.log('FOUND!!');
     lastChecked = data[0].etag;
-    if (data[0].snippet.liveBroadcastContent != 'none') return;
+    if (data[0].snippet.liveBroadcastContent != 'none' && typeof data[0].snippet.liveBroadcastContent != 'undefined') return;
     post(config.get('reddit.sub'), 'https://www.youtube.com/watch?v=' + data[0].id.videoId, data[0].snippet.title + ' - GradeAUnderA');
   }
 }
@@ -57,3 +66,5 @@ function post(sub, url, title) {
     console.log('Successfully posted!',resp.data.url);
   }).catch((err) => console.log('[REDDIT ERROR]',err.message));
 }
+
+console.log('Started...');
