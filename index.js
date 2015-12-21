@@ -20,14 +20,13 @@ var auth = Youtube.authenticate({
   , key: config.get('key')
 });
 
-var lastChecked = '';
+var lastChecked = null;
 var lastPublished = '';
 
 setInterval(() => {
-  Youtube.search.list({
+  Youtube.activities.list({
     part: 'snippet',
-    channelId: 'UCz7iJPVTBGX6DNO1RNI2Fcg',
-    order: 'date'
+    channelId: 'UCz7iJPVTBGX6DNO1RNI2Fcg'
   }, (err, data) => {
     if (err) console.log('[ERROR]',err);
     else checkData(data.items);
@@ -40,12 +39,13 @@ setInterval(() => {
 }, 30 * 1000);
 
 function checkData(data) {
-  if (data[0].etag == lastChecked) return;
+  if (data[0].snippet.type != 'upload') return;
+  if (data[0].snippet.publishedAt == lastChecked) return;
   var time = (new Date(data[0].snippet.publishedAt)).getTime();
   lastPublished = moment(data[0].snippet.publishedAt);
   if (Date.now() - time < 1000*60*5) { // Last 5 minutes
     console.log('FOUND!!');
-    lastChecked = data[0].etag;
+    lastChecked = data[0].snippet.publishedAt;
     if (data[0].snippet.liveBroadcastContent != 'none' && typeof data[0].snippet.liveBroadcastContent != 'undefined') return;
     post(config.get('reddit.sub'), 'https://www.youtube.com/watch?v=' + data[0].id.videoId, data[0].snippet.title + ' - GradeAUnderA');
   }
