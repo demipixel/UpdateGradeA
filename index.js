@@ -29,7 +29,7 @@ setInterval(() => {
     channelId: 'UCz7iJPVTBGX6DNO1RNI2Fcg'
   }, (err, data) => {
     if (err) console.log('[ERROR]',err);
-    else checkData(data.items);
+    else checkData(data.items, data);
   });
 }, 5 * 1000);
 
@@ -38,11 +38,11 @@ setInterval(() => {
   console.log(moment().format('lll') + '] Last video posted ' + lastPublished.fromNow());
 }, 30 * 1000);
 
-function checkData(data) {
-  if (!data || !data[0]) {
-    console.log('Invalid data!',data,'End of invalid data!');
+function checkData(data, log) {
+  if (!data) {
+    console.log('Invalid data!',data,'then',log,'End of invalid data!');
     return;
-  }
+  } else if (!data[0]) return;
   if (data[0].snippet.type != 'upload') return;
   if (data[0].snippet.publishedAt == lastChecked) return;
   var time = (new Date(data[0].snippet.publishedAt)).getTime();
