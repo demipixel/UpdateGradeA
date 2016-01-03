@@ -34,7 +34,10 @@ setInterval(() => {
 }, 5 * 1000);
 
 setInterval(() => {
-  if (!lastPublished) return;
+  if (!lastPublished) {
+    console.log(moment().format('lll') + '] Unkown last video post')
+    return;
+  }
   console.log(moment().format('lll') + '] Last video posted ' + lastPublished.fromNow());
 }, 30 * 1000);
 
