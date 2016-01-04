@@ -54,7 +54,15 @@ function checkData(data, log) {
     console.log('FOUND!!');
     lastChecked = data[0].snippet.publishedAt;
     if (data[0].snippet.liveBroadcastContent != 'none' && typeof data[0].snippet.liveBroadcastContent != 'undefined') return;
-    post(config.get('reddit.sub'), 'https://www.youtube.com/watch?v=' + data[0].id.videoId, data[0].snippet.title + ' - GradeAUnderA');
+    var id = data[0].snippet.thumbnails.default.url.match(/\/vi\/(.*?)\//i);
+    if (!id) {
+      console.log('Invalid ID!');
+      console.log(data[0]);
+      process.exit(0);
+    } else {
+      id = id[1];
+    }
+    post(config.get('reddit.sub'), 'https://www.youtube.com/watch?v=' + id, data[0].snippet.title + ' - GradeAUnderA');
   }
 }
 
