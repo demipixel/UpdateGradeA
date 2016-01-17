@@ -20,39 +20,35 @@ var auth = Youtube.authenticate({
   , key: config.get('key')
 });
 
-var lastChecked = null;
-var lastPublished = '';
+var channelList = config.get('channels');
+
+var lastChecked = [];
+lastChecked = channelList.map(i => null);
 
 setInterval(() => {
-  Youtube.activities.list({
-    part: 'snippet',
-    channelId: 'UCz7iJPVTBGX6DNO1RNI2Fcg'
-  }, (err, data) => {
-    if (err) console.log('[ERROR]',err);
-    else checkData(data.items, data);
+  channelList.forEach((c, index) => {
+    Youtube.activities.list({
+      part: 'snippet',
+      channelId: c.id
+    }, (err, data) => {
+      if (err) console.log('[ERROR]',err);
+      else checkData(data.items, data, c.name, index);
+    });
   });
 }, 5 * 1000);
 
-setInterval(() => {
-  if (!lastPublished) {
-    console.log(moment().format('lll') + '] Unkown last video post')
-    return;
-  }
-  console.log(moment().format('lll') + '] Last video posted ' + lastPublished.fromNow());
-}, 30 * 1000);
-
-function checkData(data, log) {
+function checkData(data, log, channelName, channelIndex) {
+  console.log(data);
   if (!data) {
     console.log('Invalid data!',data,'then',log,'End of invalid data!');
     return;
   } else if (!data[0]) return;
   if (data[0].snippet.type != 'upload') return;
-  if (data[0].snippet.publishedAt == lastChecked) return;
+  if (data[0].snippet.publishedAt == lastChecked[channelIndex]) return;
   var time = (new Date(data[0].snippet.publishedAt)).getTime();
-  lastPublished = moment(data[0].snippet.publishedAt);
   if (Date.now() - time < 1000*60*5) { // Last 5 minutes
     console.log('FOUND!!');
-    lastChecked = data[0].snippet.publishedAt;
+    lastChecked[channelIndex] = data[0].snippet.publishedAt;
     if (data[0].snippet.liveBroadcastContent != 'none' && typeof data[0].snippet.liveBroadcastContent != 'undefined') return;
     var id = data[0].snippet.thumbnails.default.url.match(/\/vi\/(.*?)\//i);
     if (!id) {
@@ -62,7 +58,7 @@ function checkData(data, log) {
     } else {
       id = id[1];
     }
-    post(config.get('reddit.sub'), 'https://www.youtube.com/watch?v=' + id, data[0].snippet.title + ' - GradeAUnderA');
+    post(config.get('reddit.sub'), 'https://www.youtube.com/watch?v=' + id, data[0].snippet.title + ' - '+channelName);
   }
 }
 
