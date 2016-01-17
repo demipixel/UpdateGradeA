@@ -38,7 +38,6 @@ setInterval(() => {
 }, 5 * 1000);
 
 function checkData(data, log, channelName, channelIndex) {
-  console.log(data);
   if (!data) {
     console.log('Invalid data!',data,'then',log,'End of invalid data!');
     return;
@@ -47,14 +46,13 @@ function checkData(data, log, channelName, channelIndex) {
   if (data[0].snippet.publishedAt == lastChecked[channelIndex]) return;
   var time = (new Date(data[0].snippet.publishedAt)).getTime();
   if (Date.now() - time < 1000*60*5) { // Last 5 minutes
-    console.log('FOUND!!');
     lastChecked[channelIndex] = data[0].snippet.publishedAt;
     if (data[0].snippet.liveBroadcastContent != 'none' && typeof data[0].snippet.liveBroadcastContent != 'undefined') return;
     var id = data[0].snippet.thumbnails.default.url.match(/\/vi\/(.*?)\//i);
     if (!id) {
       console.log('Invalid ID!');
       console.log(data[0]);
-      process.exit(0);
+      return;
     } else {
       id = id[1];
     }
