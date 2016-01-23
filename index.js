@@ -31,8 +31,7 @@ setInterval(() => {
       part: 'snippet',
       channelId: c.id
     }, (err, data) => {
-      if (err) console.log('[ERROR]',err);
-      else checkData(data.items, data, c.name, index);
+      if (!err) checkData(data.items, data, c.name, index);
     });
   });
 }, 5 * 1000);
