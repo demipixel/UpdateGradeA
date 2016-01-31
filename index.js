@@ -25,16 +25,22 @@ var channelList = config.get('channels');
 var lastChecked = [];
 lastChecked = channelList.map(i => null);
 
-setInterval(() => {
-  channelList.forEach((c, index) => {
-    Youtube.activities.list({
-      part: 'snippet',
-      channelId: c.id
-    }, (err, data) => {
-      if (!err) checkData(data.items, data, c.name, index);
-    });
+channelList.forEach((c, index) => {
+  checkChannel(c, index);
+});
+
+
+function checkChannel(channel, index) {
+  Youtube.activities.list({
+    part: 'snippet',
+    channelId: channel.id
+  }, (err, data) => {
+    if (!err) {
+      checkData(data.items, data, channel.name, index);
+      setTimeout(()=>checkChannel(channel, index),3000);
+    }
   });
-}, 5 * 1000);
+}
 
 function checkData(data, log, channelName, channelIndex) {
   if (!data) {
