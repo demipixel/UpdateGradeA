@@ -9,6 +9,8 @@
     "sub": ""
   },
 
+  "textnumber": "",
+
   "channels": [
     {
       "name": "Example Channel Name (Just a nickname on the post)",

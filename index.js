@@ -2,6 +2,7 @@ var Youtube = require('youtube-api');
 var config = require('config');
 var Snoocore = require('snoocore');
 var moment = require('moment');
+var text = require('textbelt');
 
 var reddit = new Snoocore({
   userAgent: 'GradeAUpdater v1.0.0 by /u/demipixel for /u/GradeABelowA',
@@ -77,7 +78,14 @@ function post(sub, url, title) {
   }).then((resp) => {
     resp = resp.json;
     if (resp.errors.length) console.log('[REDDIT ERROR]',resp.errors);
-    console.log('Successfully posted!',resp.data.url);
+    else {
+      console.log('Successfully posted!',resp.data.url);
+      if (config.get('textnumber')) {
+        text.send(config.get('textnumber'), resp.data.url, undefined, (err) => {
+          if (err) console.log('[TEXT ERROR]',err);
+        });
+      }
+    }
   }).catch((err) => console.log('[REDDIT ERROR]',err.message));
 }
 
