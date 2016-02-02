@@ -38,8 +38,8 @@ function checkChannel(channel, index) {
   }, (err, data) => {
     if (!err) {
       checkData(data.items, data, channel.name, index);
-      setTimeout(()=>checkChannel(channel, index),3000);
     }
+    setTimeout(()=>checkChannel(channel, index),3000);
   });
 }
 
