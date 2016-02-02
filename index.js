@@ -81,7 +81,7 @@ function post(sub, url, title) {
     else {
       console.log('Successfully posted!',resp.data.url);
       if (config.get('textnumber')) {
-        text.send(config.get('textnumber'), resp.data.url, undefined, (err) => {
+        text.sendText(config.get('textnumber'), resp.data.url, undefined, (err) => {
           if (err) console.log('[TEXT ERROR]',err);
         });
       }
