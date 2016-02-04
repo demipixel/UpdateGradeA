@@ -2,7 +2,7 @@ var Youtube = require('youtube-api');
 var config = require('config');
 var Snoocore = require('snoocore');
 var moment = require('moment');
-var text = require('textbelt');
+var request = require('request');
 
 var reddit = new Snoocore({
   userAgent: 'GradeAUpdater v1.0.0 by /u/demipixel for /u/GradeABelowA',
@@ -81,9 +81,7 @@ function post(sub, url, title) {
     else {
       console.log('Successfully posted!',resp.data.url);
       if (config.get('textnumber')) {
-        text.sendText(config.get('textnumber'), resp.data.url, undefined, (err) => {
-          if (err) console.log('[TEXT ERROR]',err);
-        });
+        request.post('http://textbelt.com/text', { form: { number: config.get('textnumber'), message: resp.data.url }});
       }
     }
   }).catch((err) => console.log('[REDDIT ERROR]',err.message));
