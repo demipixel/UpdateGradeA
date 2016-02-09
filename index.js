@@ -38,7 +38,7 @@ function checkChannel(channel, index) {
   }, (err, data) => {
     if (!err) {
       checkData(data.items, data, channel.name, index);
-    }
+    } else console.log(JSON.stringify(err));
     setTimeout(()=>checkChannel(channel, index),3000);
   });
 }
