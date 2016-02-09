@@ -27,4 +27,4 @@ build/Release
 node_modules
 
 config/*
-!config/default.json
+!config/template.json
