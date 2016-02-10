@@ -39,7 +39,7 @@ function checkChannel(channel, index) {
     if (!err) {
       checkData(data.items, data, channel.name, index);
     } else {
-      if (err.code != 'ENOTFOUND') {
+      if (err.code != 'ENOTFOUND' && err.code != 503 && err.code != 'EAI_AGAIN') {
         console.log(JSON.stringify(err));
       }
     }
