@@ -27,7 +27,8 @@ var lastChecked = [];
 lastChecked = channelList.map(i => null);
 
 channelList.forEach((c, index) => {
-  checkChannel(c, index);
+  if (!c.sub && !config.get('defaultSub')) console.log('Cannot start '+c.name+' - No sub assigned and no default sub!');
+  else checkChannel(c, index);
 });
 
 
@@ -37,7 +38,7 @@ function checkChannel(channel, index) {
     channelId: channel.id
   }, (err, data) => {
     if (!err) {
-      checkData(data.items, data, channel.name, index);
+      checkData(data.items, data, channel.name, channel.sub || config.get('defaultSub'), index);
     } else {
       if (err.code != 'ENOTFOUND' && err.code != 503 && err.code != 'EAI_AGAIN') {
         console.log(JSON.stringify(err));
@@ -47,7 +48,7 @@ function checkChannel(channel, index) {
   });
 }
 
-function checkData(data, log, channelName, channelIndex) {
+function checkData(data, log, channelName, subreddit, channelIndex) {
   if (!data) {
     console.log('Invalid data!',data,'then',log,'End of invalid data!');
     return;
@@ -66,7 +67,7 @@ function checkData(data, log, channelName, channelIndex) {
     } else {
       id = id[1];
     }
-    post(config.get('reddit.sub'), 'https://www.youtube.com/watch?v=' + id, data[0].snippet.title + ' - '+channelName);
+    post(subreddit, 'https://www.youtube.com/watch?v=' + id, data[0].snippet.title + ' - '+channelName);
   }
 }
 
