@@ -67,7 +67,7 @@ function checkData(data, log, channelName, subreddit, channelIndex) {
     } else {
       id = id[1];
     }
-    post(subreddit, 'https://www.youtube.com/watch?v=' + id, data[0].snippet.title + ' - '+channelName);
+    post(subreddit, 'https://www.youtube.com/watch?v=' + id, data[0].snippet.title + ' ('+channelName+')');
   }
 }
 
