@@ -8,13 +8,13 @@
   },
 
   "textnumber": "",
-  "defaultSub": "", // Just the name, don't include /r/
+  "defaultSub": "", /* Just the name, don't include /r/ */
 
   "channels": [
     {
       "name": "Example Channel Name (Just a nickname on the post)",
       "id": "channel's youtube id",
-      "sub": "" // Optional, will use defaultSub if not included
+      "sub": "" /* Optional, will use defaultSub if not included */
     }
   ]
 }
